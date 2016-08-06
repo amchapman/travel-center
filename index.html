@@ -540,26 +540,21 @@
     <div id="sideBar">
     <h1>What's the center of these addresses...?</h1>
     <ol>
-    <li>Enter the starting street address</li>
-    <li>Enter how many minutes you will travel</li>
-    <li>Select how you will travel (e.g. Driving)</li>
-    <li>Click the "Draw Map" button</li>
-    <li>After a few seconds a red boundary will appear on the map which represents
-        approximately the area you can travel to in that number of minutes</li>
+    <li>Enter up to 4 street addresses</li>
+    <li>Click the "Find Center" button</li>
+    <li>After a few seconds a marker will appear on the map which represents
+        the shortest driving distance from all the entered addresses</li>
     </ol>
     <hr/>
     <form>
-      <h3>Address</h3>
-      <input type="text" id="address" placeholder="e.g. Washington, DC" autofocus/>
-      <h3>Travel Time (minutes)</h3>
-      <input type="text" id="duration" placeholder="e.g. 120"/>
-      <h3>Mode of Travel</h3>
-      <select id="mode">
-        <option value="DRIVING" selected="selected">Driving</option>
-        <option value="WALKING">Walking</option>
-        <option value="BICYCLING">Bicycling</option>
-        <option value="TRANSIT">Transit</option>
-      </select>
+      <h3>Address 1</h3>
+      <input type="text" id="address1" placeholder="e.g. Washington, DC" autofocus/>
+      <h3>Address 2</h3>
+      <input type="text" id="address2" placeholder="e.g. Washington, DC" autofocus/>
+      <h3>Address 3</h3>
+      <input type="text" id="address3" placeholder="e.g. Washington, DC" autofocus/>
+      <h3>Address 4</h3>
+      <input type="text" id="address4" placeholder="e.g. Washington, DC" autofocus/>
       <h3>Accuracy</h3>
       <select id="iterations">
         <option value="3">approximate (fast)</option>
@@ -567,22 +562,18 @@
         <option value="7">more accurate (slower)</option>
         <option value="9">most accurate (very slow)</option>
       </select>
-      <input type="submit" id="draw-map" onclick="return drawMap();" value="Draw Map"/>
+      <input type="submit" id="draw-map" onclick="return drawMap();" value="Find Center"/>
       <input type="submit" id="clear-map" onclick="return clearMap();" value="Clear Map"/>
     </form>
     <progress id="progress-bar"></progress>
     <hr/>
-    <h2>Key to circle markers on map</h2>
+    <h2>Key to  markers on map</h2>
     <dl>
     <dt>red</dt>
-    <dd>starting address</dd>
+    <dd>starting addresses</dd>
     <dt>green</dt>
-    <dd>a reachable destination</dd>
-    <dt>black</dt>
-    <dd>no destination could be found at this bearing and close to the desired travel time</dd>
+    <dd>center</dd>
     </dl>
-    <p><a href="http://www.gadgetsappshacks.com/2015/09/how-to-draw-travel-time-boundary-on.html">
-    Read an article about this service</a></p>
     </div>
     <div id="map"></div>
   </body>
