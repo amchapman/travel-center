@@ -72,7 +72,7 @@
           };
           map = new google.maps.Map(mapCanvas, mapOptions);
         } else {
-          map.setCenter(results[0].geometry.location);
+          map.setCenter(coords[0]);
         }
         for (var i=0; i<coords.length; i++) {
           var marker = new google.maps.Marker({
