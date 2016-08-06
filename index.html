@@ -65,7 +65,7 @@
       function drawOrigins(coords) {
         var mapCanvas = document.getElementById('map');
         var mapOptions = {
-          center: results[0].geometry.location,
+          center: coords[0],
           zoom: 7,
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
