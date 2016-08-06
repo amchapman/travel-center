@@ -74,6 +74,7 @@
         } else {
           map.setCenter(coords[0]);
         }
+        var bounds = new google.maps.LatLngBounds();
         for (var i=0; i<coords.length; i++) {
           var marker = new google.maps.Marker({
             position: coords[i],
@@ -85,7 +86,9 @@
             },
             title: "Test"
           });
+          bounds.extend(coords[i]);
         }
+        map.fitBounds(bounds);
         disableButtons(false);
       }
       
