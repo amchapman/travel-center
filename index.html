@@ -46,16 +46,14 @@
       
       function lookupAddresses(addresses, callback) {
         var coords = [];
-        for(var i = 0; i < addresses.length; i++) {
-          currAddress = addresses[i];
+        for (var i=0; i<addresses.length; i++) {
+          var address = addresses[i];
           var geocoder = new google.maps.Geocoder();
-          geocoder.geocode({'address':currAddress}, function (results, status) {
+          geocoder.geocode({'address':address}, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
               coords.push(results[0].geometry.location);
-              if(coords.length == addresses.length) {
-                if( typeof callback == 'function' ) {
-                  callback(coords);
-                }
+              if (coords.length == addresses.length) {
+                callback(coords);
               }
             } 
           });
@@ -66,13 +64,9 @@
         if (!map) {
           var mapCanvas = document.getElementById('map');
           var mapOptions = {
-            center: coords[0],
-            zoom: 7,
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
           map = new google.maps.Map(mapCanvas, mapOptions);
-        } else {
-          map.setCenter(coords[0]);
         }
         var bounds = new google.maps.LatLngBounds();
         for (var i=0; i<coords.length; i++) {
@@ -83,8 +77,7 @@
               path: google.maps.SymbolPath.CIRCLE,
               scale: 3,
               strokeColor: "#FF0000",
-            },
-            title: "Test"
+            }
           });
           allMarkers.push(originMarker);
           bounds.extend(coords[i]);
