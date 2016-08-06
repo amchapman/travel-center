@@ -44,17 +44,6 @@
         return x;
       }
       
-      function drawMap() {
-        disableButtons(true);
-        showProgress(0, 1);
-        var addresses = [];
-        for (var i=1; i<5; i++) {
-          var address = document.getElementById('address'+i).value;
-          if (address != "") addresses.push(address);
-        }
-        lookupAddresses(addresses, drawOrigins);
-      }
-      
       function lookupAddresses(addresses, callback) {
         var coords = [];
         for (var i=0; i<addresses.length; i++) {
@@ -98,14 +87,26 @@
         disableButtons(false);
       }
       
+      function drawMap() {
+        disableButtons(true);
+        showProgress(0, 1);
+        var addresses = [];
+        for (var i=1; i<5; i++) {
+          var address = document.getElementById('address'+i).value;
+          if (address != "") addresses.push(address);
+        }
+        lookupAddresses(addresses, drawOrigins);
+      }
+      
       function calculateCenter(coords) {
-        var totalLat = 0, totalLng = 0;
+        var totalLat = 0;
+        var totalLng = 0;
         for (var i=0; i<coords.length; i++) {
           totalLat += coords[i].lat();
           totalLng += coords[i].lng();
         }
         var marker = new google.maps.Marker({
-          position: {lat: (totalLat/coords.length), lng: (totalLng/coords.length)}
+          position: {lat: (totalLat/coords.length), lng: (totalLng/coords.length)},
           map: map,
           icon: {
             path: google.maps.SymbolPath.CIRCLE,
