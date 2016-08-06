@@ -63,13 +63,17 @@
       }
       
       function drawOrigins(coords) {
-        var mapCanvas = document.getElementById('map');
-        var mapOptions = {
-          center: coords[0],
-          zoom: 7,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        map = new google.maps.Map(mapCanvas, mapOptions);
+        if (!map) {
+          var mapCanvas = document.getElementById('map');
+          var mapOptions = {
+            center: coords[0],
+            zoom: 7,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          map = new google.maps.Map(mapCanvas, mapOptions);
+        } else {
+          map.setCenter(results[0].geometry.location);
+        }
         for (var i=0; i<coords.length; i++) {
           var marker = new google.maps.Marker({
             position: coords[i],
