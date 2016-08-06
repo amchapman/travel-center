@@ -17,6 +17,8 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
     
+//    NOT CURRENTLY FUNCTIONAL
+    
       var map;
       var iterationTotal;
       var iteration;
@@ -42,103 +44,56 @@
         return x;
       }
       
+      function lookupAddresses(addresses, callback) {
+        var coords = [];
+        for(var i = 0; i < addresses.length; i++) {
+          currAddress = addresses[i];
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode({'address':currAddress}, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              coords.push(results[0].geometry.location);
+              if(coords.length == addresses.length) {
+                if( typeof callback == 'function' ) {
+                  callback(coords);
+                }
+              }
+            } 
+          });
+        }
+      }
+      
+      function drawOrigins(coords) {
+        var mapCanvas = document.getElementById('map');
+        var mapOptions = {
+          center: results[0].geometry.location,
+          zoom: 7,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(mapCanvas, mapOptions);
+        for (var i=0; i<coords.length; i++) {
+          var marker = new google.maps.Marker({
+            position: coords[i],
+            map: map,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 3,
+              strokeColor: "#FF0000",
+            },
+            title: "Test"
+          });
+        }
+        disableButtons(false);
+      }
+      
       function drawMap() {
         disableButtons(true);
-        var address = document.getElementById('address').value;
-        durationTarget = 60 * document.getElementById('duration').value; // seconds
-        var travelModeTxt = document.getElementById('mode').value;
-        iterationTotal = document.getElementById('iterations').value;
-        if (address == "") {
-          alert("Enter a valid address");
-          disableButtons(false);
-          return false;
-        }        
-        if (durationTarget == 0) {
-          alert("Enter a valid travel time in minutes");
-          disableButtons(false);
-          return false;
-        }        
-        iteration = 1;
-        showProgress(0, iterationTotal);
-        failures = 0;
-        delay = 1000;
-        switch(travelModeTxt) {
-          case "WALKING":
-            distanceMin = 0.5 * durationTarget / 3600;
-            distanceStart = 2.5 * durationTarget / 3600; 
-            distanceMax = 5 * durationTarget / 3600;
-            travelMode = google.maps.TravelMode.WALKING;
-            minDiff = 0.25 * durationTarget;
-            if (minDiff < 900) minDiff = 900;
-            break;
-          case "BICYCLING":
-            distanceMin = 1 * durationTarget / 3600;
-            distanceStart = 5 * durationTarget / 3600; 
-            distanceMax = 15 * durationTarget / 3600;
-            travelMode = google.maps.TravelMode.BICYCLING;
-            minDiff = 0.25 * durationTarget;
-            if (minDiff < 600) minDiff = 600;
-            break;
-          case "TRANSIT":
-            distanceMin = 3 * durationTarget / 3600;
-            distanceStart = 15 * durationTarget / 3600; 
-            distanceMax = 100 * durationTarget / 3600;
-            travelMode = google.maps.TravelMode.TRANSIT;
-            minDiff = 0.5 * durationTarget;
-            if (minDiff < 1800) minDiff = 1800;
-            break;   
-          default: // DRIVING
-            distanceMin = 10 * durationTarget / 3600;
-            distanceStart = 55 * durationTarget / 3600; 
-            distanceMax = 100 * durationTarget / 3600;
-            travelMode = google.maps.TravelMode.DRIVING;
-            minDiff = 0.1 * durationTarget;
-            if (minDiff < 300) minDiff = 300;
+        showProgress(0, 1);
+        var addresses = [];
+        for (var i=0; i<4; i++) {
+          var address = document.getElementById('address'+i).value;
+          if (address != "") addresses.push(address);
         }
-        distances = createArray(25, 25);
-        durations = createArray(25, 25);
-        traveldist = createArray(25, 25);
-        geocoder = new google.maps.Geocoder();
-        geocoder.geocode({
-          'address': address
-        }, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            if (!map) {
-              var mapCanvas = document.getElementById('map');
-              var mapOptions = {
-                center: results[0].geometry.location,
-                zoom: 7,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-              };
-              map = new google.maps.Map(mapCanvas, mapOptions);
-            } else {
-              map.setCenter(results[0].geometry.location);
-            }
-            origin = {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()};
-            originMarker = new google.maps.Marker({
-              position: results[0].geometry.location,
-              map: map,
-              icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 3,
-                strokeColor: "#FF0000",
-              },
-              title: address
-            });
-            allMarkers.push(originMarker);
-            for (var i=0; i<points; i++) {
-              distances[0][i] = 0;
-              durations[0][i] = 0;
-              distances[1][i] = distanceStart;
-              durations[1][i] = 0;
-            }
-            improveBoundary();
-          } else {
-            alert('Google did not recognize the address you entered [' + status + ']');
-            disableButtons(false);
-          }
-        });
-        return false;
+        lookupAddresses(addresses, drawOrigins);
       }
       
       function zoomMap() {
@@ -548,13 +503,13 @@
     <hr/>
     <form>
       <h3>Address 1</h3>
-      <input type="text" id="address1" placeholder="e.g. Washington, DC" autofocus/>
+      <input type="text" id="address" placeholder="e.g. Washington, DC" autofocus/>
       <h3>Address 2</h3>
-      <input type="text" id="address2" placeholder="e.g. Washington, DC" autofocus/>
+      <input type="text" id="address" placeholder="e.g. Raleigh, NC" />
       <h3>Address 3</h3>
-      <input type="text" id="address3" placeholder="e.g. Washington, DC" autofocus/>
+      <input type="text" id="address" placeholder="e.g. Asheville, NC" />
       <h3>Address 4</h3>
-      <input type="text" id="address4" placeholder="e.g. Washington, DC" autofocus/>
+      <input type="text" id="address" placeholder="e.g. Columbus, OH" />
       <h3>Accuracy</h3>
       <select id="iterations">
         <option value="3">approximate (fast)</option>
